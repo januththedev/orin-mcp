@@ -1,0 +1,23 @@
+{
+  "name": "orin-mcp",
+  "version": "1.0.0",
+  "description": "Orin MCP: bring Orin models into Claude, Cursor, VS Code. MCP server (Streamable HTTP + stdio) + connection site.",
+  "type": "module",
+  "bin": {
+    "orin-mcp": "./dist/cli.js"
+  },
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "node --test --import ./test/_hooks.mjs test/*.test.mjs",
+    "start:stdio": "node dist/cli.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.5.0"
+  }
+}

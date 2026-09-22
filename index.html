@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Orin MCP — Bring Orin Models into Claude, Cursor & VS Code</title>
+<meta name="description" content="Orin MCP connects Orin AI models to your AI tools. Mint a scoped token, paste one config into Claude Desktop, Claude Code, Cursor or VS Code, and let your client call Orin. Free, scoped, revocable." />
+<link rel="canonical" href="https://mcp.orinai.org/" />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+<meta name="theme-color" content="#fafaf9" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://mcp.orinai.org/" />
+<meta property="og:title" content="Orin MCP — Orin models in the tools you already use" />
+<meta property="og:description" content="Connect Orin AI to Claude, Cursor and VS Code via MCP. Scoped tokens, least privilege, revoke anytime." />
+<meta property="og:image" content="https://mcp.orinai.org/og-cover.png" />
+<meta property="og:site_name" content="Orin MCP" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Orin MCP — Orin models in your AI tools" />
+<meta name="twitter:description" content="One token, one config paste: Claude, Cursor and VS Code can call Orin. Free, scoped, revocable." />
+<meta name="twitter:image" content="https://mcp.orinai.org/og-cover.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "Orin MCP",
+      "url": "https://mcp.orinai.org/",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web, Windows, macOS, Linux",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "author": { "@type": "Person", "name": "Januth Nimnal", "url": "https://januth.dev" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I connect Orin to Claude Desktop?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Mint an Orin MCP token in Orin Chat → Account → MCP tokens, then add the Orin MCP server URL and token to Claude Desktop's MCP settings. Full config below." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Orin MCP bypass Claude limits?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Orin MCP adds Orin's own models as tools inside your client. Your Claude subscription is untouched; Orin usage flows through your Orin account quotas." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+  :root {
+    --bg: #fafaf9; --panel: #ffffff; --ink: #1c1917; --mut: #78716c;
+    --line: rgba(0,0,0,.08); --violet: #6d28d9; --violet-soft: rgba(109,40,217,.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Space Grotesk', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  ::selection { background: #a78bfa; color: #000; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(250,250,249,.82); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 62px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .brand .dot { width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, #a78bfa, #6d28d9); box-shadow: 0 0 14px rgba(167,139,250,.8); }
+  .navlinks a { color: var(--mut); text-decoration: none; font-size: 13px; font-weight: 500; margin-left: 22px; }
+  .navlinks a:hover { color: var(--ink); }
+  .hero { padding: 140px 0 40px; text-align: center; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 8px 18px; font-size: 12px; color: var(--mut); margin-bottom: 26px; box-shadow: 0 2px 12px rgba(0,0,0,.04); }
+  .pill .live { width: 7px; height: 7px; border-radius: 50%; background: #16a34a; box-shadow: 0 0 10px #16a34a; animation: pulse 2s infinite; }
+  @keyframes pulse { 50% { opacity: .4; } }
+  h1 { font-size: clamp(40px, 6.5vw, 80px); font-weight: 700; line-height: 1.02; letter-spacing: -0.03em; margin-bottom: 20px; }
+  h1 .grad { background: linear-gradient(100deg, #6d28d9, #a78bfa); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sub { color: var(--mut); font-size: clamp(15px, 2vw, 18px); max-width: 620px; margin: 0 auto 32px; line-height: 1.65; }
+  .sub b { color: var(--ink); }
+  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; background: #0c0a09; color: #fff; font-weight: 700; font-size: 13px; padding: 12px 24px; border-radius: 999px; text-decoration: none; transition: transform .15s, box-shadow .2s; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,.18); }
+  .btn.violet { background: linear-gradient(135deg, #7c3aed, #4c1d95); }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  section { padding: 72px 0 0; }
+  .kicker { font-size: 11px; font-weight: 700; letter-spacing: .22em; color: var(--violet); text-transform: uppercase; margin-bottom: 12px; }
+  h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 14px; }
+  .lead { color: var(--mut); font-size: 16px; max-width: 640px; line-height: 1.65; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 34px; counter-reset: step; }
+  .step { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 26px 22px; position: relative; }
+  .step::before { counter-increment: step; content: "0" counter(step); font-family: var(--font-mono, monospace); font-size: 11px; letter-spacing: .2em; color: var(--violet); display: block; margin-bottom: 12px; font-family: 'JetBrains Mono', monospace; }
+  .step h3 { font-size: 16px; margin-bottom: 8px; }
+  .step p, .step li { color: var(--mut); font-size: 13.5px; line-height: 1.65; }
+  .step code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: rgba(0,0,0,.05); padding: 1px 7px; border-radius: 6px; color: var(--ink); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 34px; }
+  @media (max-width: 800px) { .grid2 { grid-template-columns: 1fr; } }
+  .code { background: #0c0a09; border-radius: 18px; padding: 20px; position: relative; overflow-x: auto; }
+  .code pre { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.7; color: #e7e5e4; white-space: pre; }
+  .code .t { color: #a8a29e; } .code .k { color: #a78bfa; } .code .s { color: #bef264; }
+  .code h3 { color: #fff; font-size: 14px; margin-bottom: 12px; }
+  .copy { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); color: #d6d3d1; border-radius: 10px; padding: 6px 12px; font-size: 11px; cursor: pointer; font-family: inherit; }
+  .copy:hover { color: #fff; border-color: #a78bfa; }
+  table.tools { width: 100%; margin-top: 30px; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; border-collapse: collapse; background: var(--panel); font-size: 14px; }
+  table.tools th, table.tools td { text-align: left; padding: 14px 18px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.tools tr:last-child th, table.tools tr:last-child td { border-bottom: none; }
+  table.tools th { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; white-space: nowrap; }
+  table.tools td { color: var(--mut); }
+  table.tools td .scope { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 11px; background: var(--violet-soft); color: var(--violet); border-radius: 999px; padding: 2px 10px; margin-top: 6px; }
+  .note { margin-top: 26px; padding: 16px 20px; border-radius: 16px; background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; font-size: 13.5px; line-height: 1.6; max-width: 720px; }
+  footer { padding: 56px 0 46px; color: var(--mut); font-size: 13px; margin-top: 40px; }
+  footer .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; }
+  footer a { color: var(--mut); text-decoration: none; margin-left: 20px; }
+  footer a:hover { color: var(--violet); }
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+</style>
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span>ORIN&nbsp;MCP</div>
+    <div class="navlinks">
+      <a href="#connect">Connect</a>
+      <a href="#models">Models</a>
+      <a href="#clients">Clients</a>
+      <a href="#docs">Docs</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero wrap" style="max-width:1060px;margin:0 auto;padding-left:24px;padding-right:24px">
+  <div class="pill"><span class="live"></span><span class="mono">MCP · Streamable HTTP + stdio · live</span></div>
+  <h1>Bring Orin AI<br />into the tools <span class="grad">you already use.</span></h1>
+  <p class="sub">Orin MCP connects Orin models to <b>Claude, Cursor and VS Code</b>. Mint a scoped token, paste one config, and let your client call Orin as tools. <b>Not a Claude-limit bypass</b> — your subscription is untouched; Orin usage flows through your Orin quotas.</p>
+  <div class="cta">
+    <a href="#connect" class="btn violet"><i class="fa-solid fa-plug"></i>Connect in 3 steps</a>
+    <a href="#clients" class="btn ghost"><i class="fa-solid fa-book"></i>Setup guides</a>
+  </div>
+</header>
+
+<section class="wrap reveal" id="connect" style="max-width:1060px;margin:0 auto;padding-left:24px;padding-right:24px">
+  <p class="kicker">Connect</p>
+  <h2>Three steps, five minutes.</h2>
+  <div class="steps">
+    <div class="step"><h3>Sign in to Orin</h3><p>Use your <b>Orin Chat</b> account (<a href="https://orinai.org">orinai.org</a>). No new password, no new service.</p></div>
+    <div class="step"><h3>Mint an MCP token</h3><p>Account → <b>MCP tokens</b> → name it (<code>Claude Desktop</code>), tick scopes, <b>copy once</b>. Least privilege by default; revoke anytime.</p></div>
+    <div class="step"><h3>Paste one config</h3><p>Add the server URL + token to your client below. Enable Orin, then ask your client to use it when appropriate.</p></div>
+  </div>
+  <div class="note"><b>Endpoint:</b> <span class="mono">https://mcp.orinai.org/api/mcp</span> (Streamable HTTP) · <b>Auth:</b> <span class="mono">Authorization: Bearer &lt;token&gt;</span> · Local alternative: <span class="mono">npx orin-mcp</span> over stdio with <span class="mono">ORIN_MCP_TOKEN</span>.</div>
+</section>
+
+<section class="wrap reveal" id="models" style="max-width:1060px;margin:0 auto;padding-left:24px;padding-right:24px">
+  <p class="kicker">Models</p>
+  <h2>Four presets. Zero keys.</h2>
+  <p class="lead">Discoverable live via <span class="mono">orin_list_models</span>. Presets resolve server-side to free chains — same quotas as the web app.</p>
+  <table class="tools">
+    <tr><th>orin-thinking</th><td>Max brains. Deep reasoning chain.<br /><span class="scope">chat:generate</span></td></tr>
+    <tr><th>orin-balanced</th><td>Speed + smarts. The default.<br /><span class="scope">chat:generate</span></td></tr>
+    <tr><th>orin-coding</th><td>Best free coder, resolved live.<br /><span class="scope">chat:generate</span></td></tr>
+    <tr><th>orin-cheap</th><td>Helpers, titles, quick turns.<br /><span class="scope">chat:generate</span></td></tr>
+  </table>
+</section>
+
+<section class="wrap reveal" id="clients" style="max-width:1060px;margin:0 auto;padding-left:24px;padding-right:24px">
+  <p class="kicker">Clients</p>
+  <h2>Paste, restart, ask.</h2>
+  <p class="lead">Verified standard MCP configuration shapes. Replace <span class="mono">PASTE_TOKEN</span> with your minted token.</p>
+  <div class="grid2">
+    <div class="code"><button class="copy" data-c="desk">copy</button><h3>Claude Desktop</h3><pre id="code-desk"><span class="t"># ~/Library/Application Support/Claude/claude_desktop_config.json
+# (Windows: %APPDATA%\Claude) — then restart Claude Desktop</span>
+{
+  <span class="s">"mcpServers"</span>: {
+    <span class="s">"orin"</span>: {
+      <span class="s">"url"</span>: <span class="s">"https://mcp.orinai.org/api/mcp"</span>,
+      <span class="s">"headers"</span>: {
+        <span class="s">"Authorization"</span>: <span class="s">"Bearer PASTE_TOKEN"</span>
+      }
+    }
+  }
+}</pre></div>
+    <div class="code"><button class="copy" data-c="code">copy</button><h3>Claude Code</h3><pre id="code-code"><span class="t"># terminal — adds an HTTP MCP server to scope</span>
+claude mcp add --transport http orin \
+  https://mcp.orinai.org/api/mcp \
+  --header <span class="s">"Authorization: Bearer PASTE_TOKEN"</span>
+
+<span class="t"># verify inside Claude Code</span>
+/mcp</pre></div>
+    <div class="code"><button class="copy" data-c="cursor">copy</button><h3>Cursor</h3><pre id="code-cursor"><span class="t"># ~/.cursor/mcp.json (project: .cursor/mcp.json)</span>
+{
+  <span class="s">"mcpServers"</span>: {
+    <span class="s">"orin"</span>: {
+      <span class="s">"url"</span>: <span class="s">"https://mcp.orinai.org/api/mcp"</span>,
+      <span class="s">"headers"</span>: {
+        <span class="s">"Authorization"</span>: <span class="s">"Bearer PASTE_TOKEN"</span>
+      }
+    }
+  }
+}</pre></div>
+    <div class="code"><button class="copy" data-c="vscode">copy</button><h3>VS Code</h3><pre id="code-vscode"><span class="t"># .vscode/mcp.json — enable MCP in settings first</span>
+{
+  <span class="s">"servers"</span>: {
+    <span class="s">"orin"</span>: {
+      <span class="s">"url"</span>: <span class="s">"https://mcp.orinai.org/api/mcp"</span>,
+      <span class="s">"headers"</span>: {
+        <span class="s">"Authorization"</span>: <span class="s">"Bearer PASTE_TOKEN"</span>
+      }
+    }
+  }
+}</pre></div>
+  </div>
+  <div class="note"><b>Local alternative (no network hop):</b> <span class="mono">npm i -g github:januththedev/orin-mcp</span>, set <span class="mono">ORIN_MCP_TOKEN</span>, and point any stdio-capable client at <span class="mono">orin-mcp</span>. Same tools, same scopes, same limits.</div>
+</section>
+
+<section class="wrap reveal" id="docs" style="max-width:1060px;margin:0 auto;padding-left:24px;padding-right:24px">
+  <p class="kicker">Credentials</p>
+  <h2>Least privilege, always.</h2>
+  <p class="lead">Tokens are scoped at mint (<span class="mono">models:read</span>, <span class="mono">chat:generate</span>, <span class="mono">usage:read</span>), shown once, hashed at rest, revocable instantly — revocation kills live sessions within a minute. A password reset kills every MCP token on the account. Per-token rate limits, request caps, and full request logging are always on.</p>
+  <table class="tools">
+    <tr><th>orin_chat</th><td>Full message history → assistant reply.<br /><span class="scope">chat:generate</span></td></tr>
+    <tr><th>orin_generate</th><td>Single prompt (+optional system) → reply.<br /><span class="scope">chat:generate</span></td></tr>
+    <tr><th>orin_list_models</th><td>Live catalog with capabilities.<br /><span class="scope">models:read</span></td></tr>
+    <tr><th>orin_usage</th><td>Your Orin usage counters.<br /><span class="scope">usage:read</span></td></tr>
+  </table>
+  <div class="note"><b>Prompts included:</b> <span class="mono">orin_summarize</span>, <span class="mono">orin_code_review</span> · <b>Resources:</b> <span class="mono">orin://models</span>, <span class="mono">orin://usage</span> · Docs + source: <a href="https://github.com/januththedev/orin-mcp" style="color:#92400e;font-weight:700">github.com/januththedev/orin-mcp</a></div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span>ORIN&nbsp;MCP <span style="color:var(--mut);font-weight:400;margin-left:10px">free for life · made by <a href="https://januth.dev" target="_blank" style="margin:0;color:var(--violet);font-weight:700">Januth</a></span></div>
+    <div>
+      <a href="/api/mcp" target="_blank">Endpoint</a>
+      <a href="https://github.com/januththedev/orin-mcp" target="_blank">GitHub</a>
+      <a href="https://orinai.org" target="_blank">Orin AI</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', () => {
+    const pre = document.getElementById('code-' + b.dataset.c);
+    if (!pre) return;
+    navigator.clipboard.writeText(pre.textContent).then(() => {
+      b.textContent = 'copied'; setTimeout(() => b.textContent = 'copy', 1500);
+    });
+  }));
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
