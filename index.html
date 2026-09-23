@@ -169,15 +169,18 @@
   <h2>Paste, restart, ask.</h2>
   <p class="lead">Verified standard MCP configuration shapes. Replace <span class="mono">PASTE_TOKEN</span> with your minted token.</p>
   <div class="grid2">
-    <div class="code"><button class="copy" data-c="desk">copy</button><h3>Claude Desktop</h3><pre id="code-desk"><span class="t"># ~/Library/Application Support/Claude/claude_desktop_config.json
-# (Windows: %APPDATA%\Claude) — then restart Claude Desktop</span>
+    <div class="code"><button class="copy" data-c="desk">copy</button><h3>Claude Desktop</h3><pre id="code-desk"><span class="t"># Option A — no JSON: Settings → Connectors → Add custom
+# connector → paste https://mcp.orinai.org/api/mcp
+# (paid plans; sign in with your MCP token when asked)</span>
+
+<span class="t"># Option B — guaranteed on every plan: run Orin locally
+# via stdio (claude_desktop_config.json), then restart Claude</span>
 {
   <span class="s">"mcpServers"</span>: {
     <span class="s">"orin"</span>: {
-      <span class="s">"url"</span>: <span class="s">"https://mcp.orinai.org/api/mcp"</span>,
-      <span class="s">"headers"</span>: {
-        <span class="s">"Authorization"</span>: <span class="s">"Bearer PASTE_TOKEN"</span>
-      }
+      <span class="s">"command"</span>: <span class="s">"npx"</span>,
+      <span class="s">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"github:januththedev/orin-mcp"</span>],
+      <span class="s">"env"</span>: { <span class="s">"ORIN_MCP_TOKEN"</span>: <span class="s">"PASTE_TOKEN"</span> }
     }
   }
 }</pre></div>
