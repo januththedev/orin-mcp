@@ -67,9 +67,9 @@ export function orinBackend(cfg: McpConfig): Backend {
   return {
     async verify(token: string): Promise<McpIdentity> {
       const json = await withTimeout(cfg.timeoutMs, (signal) =>
-        call('/api/auth/password', {
+        call('/api/auth/mcp/verify', {
           method: 'POST',
-          body: JSON.stringify({ action: 'mcp-verify', token }),
+          body: JSON.stringify({}),
         }, token, signal),
       ) as { uid?: unknown; scopes?: unknown };
       if (!json || typeof json.uid !== 'string' || !json.uid) {
@@ -83,7 +83,7 @@ export function orinBackend(cfg: McpConfig): Backend {
 
     async models(token: string): Promise<BackendModel[]> {
       const json = await withTimeout(cfg.timeoutMs, (signal) =>
-        call('/api/openai/v1/models', { method: 'GET' }, token, signal),
+        call('/api/mcp', { method: 'POST', body: JSON.stringify({ action: 'models' }) }, token, signal),
       ) as { data?: unknown };
       const data = Array.isArray(json?.data) ? json.data : [];
       return data
@@ -94,9 +94,10 @@ export function orinBackend(cfg: McpConfig): Backend {
 
     async chat(token, args): Promise<BackendResult> {
       const json = await withTimeout(cfg.timeoutMs, (signal) =>
-        call('/api/openai/v1/chat/completions', {
+        call('/api/mcp', {
           method: 'POST',
           body: JSON.stringify({
+            action: 'chat',
             model: args.model,
             messages: args.messages,
             ...(typeof args.temperature === 'number' ? { temperature: args.temperature } : {}),
@@ -111,9 +112,9 @@ export function orinBackend(cfg: McpConfig): Backend {
 
     async usage(token: string): Promise<BackendUsage> {
       const json = await withTimeout(cfg.timeoutMs, (signal) =>
-        call('/api/history', {
+        call('/api/mcp', {
           method: 'POST',
-          body: JSON.stringify({ action: 'usage-get' }),
+          body: JSON.stringify({ action: 'usage' }),
         }, token, signal),
       ) as { text?: unknown; images?: unknown; videos?: unknown };
       const num = (v: unknown): number => (typeof v === 'number' && Number.isFinite(v) ? v : 0);

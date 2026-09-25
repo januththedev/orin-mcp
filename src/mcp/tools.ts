@@ -111,7 +111,7 @@ export async function callTool(
     case 'orin_chat':
     case 'orin_generate':
       return gated(deps, token, 'chat:generate', requestId, name, async () => {
-        const a = cleanGenerateArgs(args, deps.config.maxMessages, deps.config.maxMessageChars);
+        const a = cleanGenerateArgs(args, deps.config.maxMessages, deps.config.maxMessageChars, deps.config.maxRequestBytes);
         const r = await deps.backend.chat(token as string, {
           model: a.model, messages: a.messages, temperature: a.temperature, maxTokens: a.max_tokens,
         });
