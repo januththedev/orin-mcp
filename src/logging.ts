@@ -29,6 +29,5 @@ export function log(level: LogLevel, message: string, fields: LogFields = {}): v
     if (v !== undefined && v !== '') parts.push(`${k}=${safe(v)}`);
   }
   const line = parts.join(' ');
-  if (level === 'error') console.error(line);
-  else console.log(line);
+  console.error(line);
 }

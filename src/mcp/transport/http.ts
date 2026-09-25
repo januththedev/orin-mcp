@@ -21,7 +21,7 @@ function bearer(req: { headers?: Record<string, string | string[] | undefined> }
   const h = req.headers?.authorization;
   const v = Array.isArray(h) ? h[0] : h;
   if (!v) return null;
-  const m = /^Bearer\s+(.+)$/i.exec(v.trim());
+  const m = /^Bearer\s+([A-Za-z0-9._~-]{40,4096})$/.exec(v.trim());
   return m ? m[1] : null;
 }
 

@@ -20,7 +20,7 @@ export function cleanMessages(raw: unknown, maxN: number, maxChars: number): Ori
   });
 }
 
-export function cleanGenerateArgs(raw: unknown, maxN: number, maxChars: number): Required<Pick<GenerateArgs, 'model' | 'messages'>> & GenerateArgs {
+export function cleanGenerateArgs(raw: unknown, maxN: number, maxChars: number, maxRequestBytes = 64 * 1024): Required<Pick<GenerateArgs, 'model' | 'messages'>> & GenerateArgs {
   if (!raw || typeof raw !== 'object') throw new McpError('INVALID_REQUEST', 'Arguments object required.');
   const a = raw as Record<string, unknown>;
   let messages: OrinMessage[];
@@ -37,6 +37,9 @@ export function cleanGenerateArgs(raw: unknown, maxN: number, maxChars: number):
     messages = cleanMessages(a.messages, maxN, maxChars);
   } else {
     throw new McpError('INVALID_REQUEST', 'Provide "prompt" or "messages".');
+  }
+  if (Buffer.byteLength(JSON.stringify({ messages, model: a.model ?? 'orin-balanced' }), 'utf8') > maxRequestBytes) {
+    throw new McpError('INVALID_REQUEST', `Request exceeds ${maxRequestBytes} bytes.`);
   }
   const model = typeof a.model === 'string' && a.model ? a.model : 'orin-balanced';
   const out: Required<Pick<GenerateArgs, 'model' | 'messages'>> & GenerateArgs = { model, messages };

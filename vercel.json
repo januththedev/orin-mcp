@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
-    "api/mcp.ts": { "maxDuration": 120 }
+    "api/mcp.ts": { "maxDuration": 60 }
   },
   "rewrites": [
     { "source": "/docs/:slug", "destination": "/docs/:slug.html" }
